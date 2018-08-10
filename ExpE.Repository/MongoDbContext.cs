@@ -23,6 +23,7 @@ namespace ExpE.Repository
 
         public IMongoCollection<MyForm> Forms => _database.GetCollection<MyForm>("forms");
 
-        public IMongoCollection<Expense> Expenses => _database.GetCollection<Expense>("expenses");
+        public IMongoCollection<Record> Records => _database.GetCollection<Record>("records");
+
     }
 }

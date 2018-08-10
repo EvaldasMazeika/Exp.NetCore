@@ -58,30 +58,6 @@ namespace ExpE.Repository.Repositories
             return result;
         }
 
-        public async Task<bool> AddExpense(Expense model)
-        {
-            try
-            {
-                await _context.Expenses.InsertOneAsync(model);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Expense>> GettAllExpenses()
-        {
-            return await _context.Expenses.Find(_ => true).ToListAsync();
-        }
-
-        public async Task<Expense> GetExpenseById(string id)
-        {
-            return await _context.Expenses.Find(x => x.Id == id).FirstOrDefaultAsync();
-        }
-
         public bool ExistsFormName(string name)
         {
             var la =  _context.Forms.Find(x => x.Name == name).CountDocuments();
@@ -96,6 +72,52 @@ namespace ExpE.Repository.Repositories
         public async Task<IEnumerable<MyForm>> GetAllForms()
         {
             return await _context.Forms.Find(_ => true).ToListAsync();
+        }
+
+
+
+
+        public async Task<List<Record>> GetRecords(string id)
+        {
+            var records = await _context.Records.FindAsync(x => x.FormId == id);
+
+            return await records.ToListAsync();
+        }
+
+        public async Task<Record> GetRecord(string id)
+        {
+            return await _context.Records.Find(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> AddRecord(Record record)
+        {
+            try
+            {
+                await _context.Records.InsertOneAsync(record);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteRecord(string id)
+        {
+            var filter = Builders<Record>.Filter.Eq("_id", id);
+            var result = await _context.Records.DeleteOneAsync(filter);
+
+            return result.DeletedCount != 0;
+        }
+
+        public async Task<bool> UpdateRecord(Record record)
+        {
+            var actionResult = await _context.Records.ReplaceOneAsync(x => x.Id.Equals(record.Id), record,
+    new UpdateOptions() { IsUpsert = true });
+
+            return actionResult.IsAcknowledged
+                   && actionResult.ModifiedCount > 0;
         }
     }
 }

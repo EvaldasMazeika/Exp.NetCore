@@ -17,8 +17,11 @@ namespace ExpE.Repository.Interfaces
         Task<bool> UpdateForm(MyForm form);
         Task<bool> DeleteFormById(string id);
         Task<IEnumerable<MyForm>> GetFormByName(string name);
-        Task<bool> AddExpense(Expense model);
-        Task<IEnumerable<Expense>> GettAllExpenses();
-        Task<Expense> GetExpenseById(string id);
+
+        Task<List<Record>> GetRecords(string id);
+        Task<Record> GetRecord(string id);
+        Task<bool> AddRecord(Record record);
+        Task<bool> DeleteRecord(string id);
+        Task<bool> UpdateRecord(Record record);
     }
 }

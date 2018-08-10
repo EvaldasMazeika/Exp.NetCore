@@ -46,17 +46,27 @@ namespace ExpE.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> AddExpense(Expense model)
+        public Task<List<Record>> GetRecords(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Expense>> GettAllExpenses()
+        public Task<Record> GetRecord(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Expense> GetExpenseById(string id)
+        public Task<bool> AddRecord(Record record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteRecord(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateRecord(Record record)
         {
             throw new NotImplementedException();
         }

@@ -18,6 +18,9 @@ namespace ExpE.Domain
         [JsonProperty(PropertyName = "hideExpression")]
         public string HideExpression { get; set; }
 
+        [JsonProperty(PropertyName = "defaultValue")]
+        public string DefaultValue { get; set; }
+
         [JsonProperty(PropertyName = "templateOptions")]
         public TemplateOptions TemplateOptions { get; set; }
     }

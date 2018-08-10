@@ -12,6 +12,6 @@ namespace ExpE.Repository.Interfaces
     public interface IMongoDbContext
     {
         IMongoCollection<MyForm> Forms { get; }
-        IMongoCollection<Expense> Expenses { get; }
+        IMongoCollection<Record> Records { get; }
     }
 }
