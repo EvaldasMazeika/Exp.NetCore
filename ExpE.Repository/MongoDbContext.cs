@@ -25,5 +25,7 @@ namespace ExpE.Repository
 
         public IMongoCollection<Record> Records => _database.GetCollection<Record>("records");
 
+        public IMongoCollection<AutoComplete> AutoCompletes => _database.GetCollection<AutoComplete>("autoCompletes");
+
     }
 }

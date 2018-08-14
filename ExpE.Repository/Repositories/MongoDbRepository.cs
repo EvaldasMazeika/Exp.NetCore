@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ExpE.Domain;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ExpE.Repository.Repositories
@@ -118,6 +119,52 @@ namespace ExpE.Repository.Repositories
 
             return actionResult.IsAcknowledged
                    && actionResult.ModifiedCount > 0;
+        }
+
+        public async Task<bool> AddAutoCompletes(AutoCompleteList autoCompleteList)
+        {
+            try
+            {
+                foreach (var item in autoCompleteList.Properties)
+                {
+                    var record = await _context.AutoCompletes.Find(x => x.FormId == autoCompleteList.FormId && x.PropertyKey == item).FirstOrDefaultAsync();
+                    if (record == null)
+                    {
+                        var id = ObjectId.GenerateNewId().ToString();
+                        var res = new AutoComplete { Id = id, FormId = autoCompleteList.FormId, PropertyKey = item, Items = new List<string>() };
+                        await _context.AutoCompletes.InsertOneAsync(res);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<AutoComplete> GetAutoComplete(string formId, string propertyKey)
+        {
+            var result = await _context.AutoCompletes.FindAsync(w => w.FormId == formId && w.PropertyKey == propertyKey);
+            return await result.SingleAsync();
+        }
+
+        public async Task AddWordsToAutos(AutoCompleteWords words)
+        {
+            foreach (var item in words.Words)
+            {
+                var autoObject = await _context.AutoCompletes.Find(w => w.FormId == words.FormId && w.PropertyKey == item.Key).SingleAsync();
+                if (!autoObject.Items.Contains(item.Value))
+                {
+                  //  autoObject.Items.Append(item.Value);
+
+                    var filter = Builders<AutoComplete>.Filter.Eq(s => s.Id, autoObject.Id);
+                    var update = Builders<AutoComplete>.Update.AddToSet(s => s.Items, item.Value);
+                    await _context.AutoCompletes.UpdateOneAsync(filter, update);
+                }
+            }
         }
     }
 }

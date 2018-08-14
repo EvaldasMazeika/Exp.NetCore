@@ -23,5 +23,11 @@ namespace ExpE.Domain
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+
+        [JsonProperty(PropertyName = "formId")]
+        public string FormId { get; set; }
+
+        [JsonProperty(PropertyName = "isDateToday")]
+        public Boolean? IsDateToday { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpE.Domain;
+using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,20 @@ namespace ExpE.Web.Controllers
         public async Task<ActionResult<bool>> DeleteForm(string id)
         {
             return await _repo.DeleteFormById(id);
+        }
+
+        [HttpPost]
+        [Route("autocompletes")]
+        public async Task<ActionResult<bool>> AddAutoCompletes([FromBody] AutoCompleteList autoCompleteList)
+        {
+            return await _repo.AddAutoCompletes(autoCompleteList);
+        }
+
+        [HttpGet]
+        [Route("autocompletes/{formId}/{propertyKey}")]
+        public async Task<ActionResult<AutoComplete>> GetAutoComplete(string formId, string propertyKey)
+        {
+            return await _repo.GetAutoComplete(formId, propertyKey);
         }
 
     }

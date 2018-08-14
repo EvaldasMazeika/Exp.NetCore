@@ -23,5 +23,8 @@ namespace ExpE.Repository.Interfaces
         Task<bool> AddRecord(Record record);
         Task<bool> DeleteRecord(string id);
         Task<bool> UpdateRecord(Record record);
+        Task<bool> AddAutoCompletes(AutoCompleteList autoCompleteList);
+        Task<AutoComplete> GetAutoComplete(string formId, string propertyKey);
+        Task AddWordsToAutos(AutoCompleteWords words);
     }
 }

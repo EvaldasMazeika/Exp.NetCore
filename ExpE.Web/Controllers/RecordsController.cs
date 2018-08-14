@@ -74,5 +74,13 @@ namespace ExpE.Web.Controllers
             return await _repo.DeleteRecord(id);
         }
 
+        [HttpPost]
+        [Route("autocomplete")]
+        public async Task<IActionResult> AddWordsToAutoDictionaries([FromBody] AutoCompleteWords words)
+        {
+            await _repo.AddWordsToAutos(words);
+            return Ok();
+        }
+
     }
 }

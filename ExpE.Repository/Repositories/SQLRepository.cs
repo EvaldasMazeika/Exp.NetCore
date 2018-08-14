@@ -70,5 +70,20 @@ namespace ExpE.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> AddAutoCompletes(AutoCompleteList autoCompleteList)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AutoComplete> GetAutoComplete(string formId, string propertyKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddWordsToAutos(AutoCompleteWords words)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
