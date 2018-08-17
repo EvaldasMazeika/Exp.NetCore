@@ -13,6 +13,6 @@ namespace ExpE.Domain
         public string Label { get; set; }
 
         [JsonProperty(PropertyName = "value")]
-        public int Value { get; set; }
+        public string Value { get; set; }
     }
 }

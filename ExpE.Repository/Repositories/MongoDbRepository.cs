@@ -45,8 +45,17 @@ namespace ExpE.Repository.Repositories
 
         public async Task<bool> DeleteFormById(string id)
         {
-            var filter = Builders<MyForm>.Filter.Eq("_id", id);
-            var result = await _context.Forms.DeleteOneAsync(filter);
+            //deletes form
+            var filterForm = Builders<MyForm>.Filter.Eq("_id", id);
+            var result = await _context.Forms.DeleteOneAsync(filterForm);
+
+            //deletes related records
+            var filterRecords = Builders<Record>.Filter.Eq("FormId", id);
+            await _context.Records.DeleteManyAsync(filterRecords);
+
+            //delete related auto completes
+            var filterAutoCompletes = Builders<AutoComplete>.Filter.Eq("FormId", id);
+            await _context.AutoCompletes.DeleteManyAsync(filterAutoCompletes);
 
             return result.DeletedCount != 0;
         }
