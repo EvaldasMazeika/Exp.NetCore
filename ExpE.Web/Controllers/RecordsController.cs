@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
+using HeyRed.Mime;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using MongoDB.Bson;
 
 namespace ExpE.Web.Controllers
@@ -15,10 +19,12 @@ namespace ExpE.Web.Controllers
     public class RecordsController : ControllerBase
     {
         private readonly IRepository _repo;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public RecordsController(IRepository repo)
+        public RecordsController(IRepository repo, IHostingEnvironment hostingEnvironment)
         {
             _repo = repo;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -35,7 +41,37 @@ namespace ExpE.Web.Controllers
             return await _repo.GetRecord(id);
         }
 
+        [HttpGet]
+        [Route("download/{formId}/{propertyName}/{title}")]
+        public async Task<IActionResult> DownloadFile(string formId, string propertyName, string title)
+        {
+              string root = _hostingEnvironment.WebRootPath;
+            //  root = String.Concat(root, $"/{formId}/{propertyName}");
+            // IFileProvider provider = new PhysicalFileProvider(root);
+            // IFileInfo fileInfo = provider.GetFileInfo(title);
+            // var readStream = fileInfo.CreateReadStream();
+            var path = Path.Combine(root,formId,propertyName, title);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return File(memory, MimeGuesser.GuessMimeType(path), title);
+        }
+
         [HttpPost]
+        [Route("test")]
+        public ActionResult<int> TestMe()
+        {
+            var file = Request.Form.Files;
+
+            return Ok();
+        }
+
+        [HttpPost, DisableRequestSizeLimit]
         [Route("record")]
         public async Task<ActionResult<Record>> InsertRecord([FromBody] Record record)
         {

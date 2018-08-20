@@ -27,6 +27,9 @@ namespace ExpE.Domain
         [JsonProperty(PropertyName = "formId")]
         public string FormId { get; set; }
 
+        [JsonProperty(PropertyName = "isMultiFile")]
+        public Boolean? IsMultiFile { get; set; }
+
         [JsonProperty(PropertyName = "isDateToday")]
         public Boolean? IsDateToday { get; set; }
     }
