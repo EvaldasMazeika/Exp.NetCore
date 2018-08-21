@@ -41,16 +41,47 @@ namespace ExpE.Web.Controllers
             return await _repo.GetRecord(id);
         }
 
+        [HttpPost]
+        [Route("upload/{formId}/{recordId}/{propertyName}")]
+        public async Task<IActionResult> UploadFile(string formId, string recordId, string propertyName)
+        {
+            try
+            {
+                string path = Path.Combine(_hostingEnvironment.WebRootPath, formId, recordId, propertyName);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                var files = Request.Form.Files;
+
+                foreach (var item in files)
+                {
+                    string fileName = item.FileName;
+                    string fullPath = Path.Combine(path, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(stream);
+                    }
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         [HttpGet]
-        [Route("download/{formId}/{propertyName}/{title}")]
-        public async Task<IActionResult> DownloadFile(string formId, string propertyName, string title)
+        [Route("download/{formId}/{recordId}/{propertyName}/{title}")]
+        public async Task<IActionResult> DownloadFile(string formId,string recordId, string propertyName, string title)
         {
               string root = _hostingEnvironment.WebRootPath;
             //  root = String.Concat(root, $"/{formId}/{propertyName}");
             // IFileProvider provider = new PhysicalFileProvider(root);
             // IFileInfo fileInfo = provider.GetFileInfo(title);
             // var readStream = fileInfo.CreateReadStream();
-            var path = Path.Combine(root,formId,propertyName, title);
+            var path = Path.Combine(root,formId, recordId, propertyName, title);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
