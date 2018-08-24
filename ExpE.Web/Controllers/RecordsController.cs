@@ -52,6 +52,11 @@ namespace ExpE.Web.Controllers
                 {
                     Directory.CreateDirectory(path);
                 }
+                else
+                {
+                    Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
+                }
                 var files = Request.Form.Files;
 
                 foreach (var item in files)
@@ -135,10 +140,18 @@ namespace ExpE.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("record/{id}")]
-        public async Task<ActionResult<bool>> DeleteRecord(string id)
+        [Route("record/{formId}/{id}")]
+        public async Task<ActionResult<bool>> DeleteRecord(string formId, string id)
         {
-            return await _repo.DeleteRecord(id);
+            var isDeleted = await _repo.DeleteRecord(id);
+            //check if record has any files
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, formId, id);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+
+            return isDeleted;
         }
 
         [HttpPost]

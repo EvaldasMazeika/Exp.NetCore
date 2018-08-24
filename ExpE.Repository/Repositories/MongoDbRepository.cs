@@ -175,5 +175,38 @@ namespace ExpE.Repository.Repositories
                 }
             }
         }
+
+        public async Task<bool> AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown)
+        {
+            try
+            {
+                var ids = ObjectId.GenerateNewId().ToString();
+
+                var res = new SelectList { Id = ids, FormId = id, PropertyKey = key, Items = dropDown };
+                await _context.SelectLists.InsertOneAsync(res);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task AddSelectItem(string id, string key, DropDownOptions dropDown)
+        {
+            var selectObject = await _context.SelectLists.Find(w => w.FormId == id && w.PropertyKey == key).SingleAsync();
+            var filter = Builders<SelectList>.Filter.Eq(s => s.Id, selectObject.Id);
+            var update = Builders<SelectList>.Update.AddToSet(s => s.Items, dropDown);
+            await _context.SelectLists.UpdateOneAsync(filter, update);
+        }
+
+        public async Task<List<DropDownOptions>> GetSelectList(string id, string key)
+        {
+            var items = await _context.SelectLists.Find(x => x.FormId == id && x.PropertyKey == key ).SingleAsync();
+
+            return items.Items.ToList();
+        }
     }
 }

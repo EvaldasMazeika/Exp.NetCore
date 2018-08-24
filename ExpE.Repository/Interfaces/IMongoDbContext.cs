@@ -14,5 +14,6 @@ namespace ExpE.Repository.Interfaces
         IMongoCollection<MyForm> Forms { get; }
         IMongoCollection<Record> Records { get; }
         IMongoCollection<AutoComplete> AutoCompletes { get; }
+        IMongoCollection<SelectList> SelectLists { get; }
     }
 }

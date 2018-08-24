@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpE.Domain;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -16,10 +18,12 @@ namespace ExpE.Web.Controllers
     public class FormController : ControllerBase
     {
         private readonly IRepository _repo;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FormController(IRepository repo)
+        public FormController(IRepository repo, IHostingEnvironment hostingEnvironment)
         {
             _repo = repo;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpPost]
@@ -73,6 +77,13 @@ namespace ExpE.Web.Controllers
         [Route("form/{id}")]
         public async Task<ActionResult<bool>> DeleteForm(string id)
         {
+            //check if form has any files
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, id);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+
             return await _repo.DeleteFormById(id);
         }
 
@@ -88,6 +99,28 @@ namespace ExpE.Web.Controllers
         public async Task<ActionResult<AutoComplete>> GetAutoComplete(string formId, string propertyKey)
         {
             return await _repo.GetAutoComplete(formId, propertyKey);
+        }
+
+        [HttpPost]
+        [Route("selectitems/{id}/{key}")]
+        public async Task<ActionResult<bool>> AddSelectList(string id, string key, [FromBody] IEnumerable<DropDownOptions> dropDown)
+        {
+            return await _repo.AddSelectList(id, key, dropDown);
+        }
+
+        [HttpPost]
+        [Route("selectitem/{id}/{key}")]
+        public async Task<ActionResult<bool>> AddSelectItem(string id, string key, [FromBody] DropDownOptions dropDown)
+        {
+            await _repo.AddSelectItem(id, key, dropDown);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("selectitems/{id}/{key}")]
+        public async Task<IEnumerable<DropDownOptions>> GetSelectList(string id, string key)
+        {
+            return await _repo.GetSelectList(id, key);
         }
 
     }

@@ -27,5 +27,6 @@ namespace ExpE.Repository
 
         public IMongoCollection<AutoComplete> AutoCompletes => _database.GetCollection<AutoComplete>("autoCompletes");
 
+        public IMongoCollection<SelectList> SelectLists => _database.GetCollection<SelectList>("selectList");
     }
 }

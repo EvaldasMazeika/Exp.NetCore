@@ -30,7 +30,10 @@ namespace ExpE.Domain
         [JsonProperty(PropertyName = "isMultiFile")]
         public Boolean? IsMultiFile { get; set; }
 
-        [JsonProperty(PropertyName = "isDateToday")]
-        public Boolean? IsDateToday { get; set; }
+        [JsonProperty(PropertyName = "isTime")]
+        public Boolean? IsTime { get; set; }
+
+        [JsonProperty(PropertyName = "dateFormat")]
+        public string DateFormat { get; set; }
     }
 }

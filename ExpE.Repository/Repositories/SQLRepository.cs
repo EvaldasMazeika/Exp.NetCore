@@ -85,5 +85,20 @@ namespace ExpE.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddSelectItem(string id, string key, DropDownOptions dropDown)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DropDownOptions>> GetSelectList(string id, string key)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
