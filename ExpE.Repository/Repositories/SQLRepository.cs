@@ -100,5 +100,30 @@ namespace ExpE.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> DeleteProperty(string formId, string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Property> AddProperty(string formId, Property property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Property> UpdateProperty(string formId, Property property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Record> GetLatestRecord(string formId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

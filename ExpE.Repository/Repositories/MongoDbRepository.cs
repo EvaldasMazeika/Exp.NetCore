@@ -37,7 +37,7 @@ namespace ExpE.Repository.Repositories
         public async Task<bool> UpdateForm(MyForm form)
         {
             var actionResult = await _context.Forms.ReplaceOneAsync(x => x.Id.Equals(form.Id), form,
-                new UpdateOptions() {IsUpsert = true});
+                new UpdateOptions() { IsUpsert = true });
 
             return actionResult.IsAcknowledged
                    && actionResult.ModifiedCount > 0;
@@ -70,7 +70,7 @@ namespace ExpE.Repository.Repositories
 
         public bool ExistsFormName(string name)
         {
-            var la =  _context.Forms.Find(x => x.Name == name).CountDocuments();
+            var la = _context.Forms.Find(x => x.Name == name).CountDocuments();
             return la > 0;
         }
 
@@ -167,7 +167,7 @@ namespace ExpE.Repository.Repositories
                 var autoObject = await _context.AutoCompletes.Find(w => w.FormId == words.FormId && w.PropertyKey == item.Key).SingleAsync();
                 if (!autoObject.Items.Contains(item.Value))
                 {
-                  //  autoObject.Items.Append(item.Value);
+                    //  autoObject.Items.Append(item.Value);
 
                     var filter = Builders<AutoComplete>.Filter.Eq(s => s.Id, autoObject.Id);
                     var update = Builders<AutoComplete>.Update.AddToSet(s => s.Items, item.Value);
@@ -204,9 +204,68 @@ namespace ExpE.Repository.Repositories
 
         public async Task<List<DropDownOptions>> GetSelectList(string id, string key)
         {
-            var items = await _context.SelectLists.Find(x => x.FormId == id && x.PropertyKey == key ).SingleAsync();
+            var items = await _context.SelectLists.Find(x => x.FormId == id && x.PropertyKey == key).SingleAsync();
 
             return items.Items.ToList();
+        }
+
+        public async Task<bool> DeleteProperty(string formId, string key)
+        {
+
+            var update = Builders<MyForm>.Update.PullFilter(p => p.Items, f => f.Key == key);
+            var result = await _context.Forms.UpdateOneAsync(z => z.Id == formId, update);
+
+            // if it is auto complete, delete it
+            var filterAutoCompletes = Builders<AutoComplete>.Filter.Where(w => w.FormId == formId && w.PropertyKey == key);
+            await _context.AutoCompletes.DeleteOneAsync(filterAutoCompletes);
+
+            // if it is select list, delete entity
+            var filterSelectList = Builders<SelectList>.Filter.Where(w => w.FormId == formId && w.PropertyKey == key);
+            await _context.SelectLists.DeleteOneAsync(filterSelectList);
+
+            return result.ModifiedCount != 0;
+        }
+
+        public async Task<Property> AddProperty(string formId, Property property)
+        {
+            var update = Builders<MyForm>.Update.AddToSet(p => p.Items, property);
+            await _context.Forms.UpdateOneAsync(w => w.Id == formId, update);
+
+
+            var res = await _context.Forms.Find(w => w.Id == formId).FirstOrDefaultAsync();
+
+            return res.Items.Where(w => w.Key == property.Key).FirstOrDefault();
+        }
+
+        public async Task<Property> UpdateProperty(string formId, Property property)
+        {
+            var filter = Builders<MyForm>.Filter.Where(x => x.Id == formId && x.Items.Any(i => i.Key == property.Key));
+            var update = Builders<MyForm>.Update.Set(w => w.Items.ElementAt(-1), property);
+            await _context.Forms.UpdateOneAsync(filter, update);
+
+            var res = await _context.Forms.Find(w => w.Id == formId).FirstOrDefaultAsync();
+
+            return res.Items.SingleOrDefault(w => w.Key == property.Key);
+        }
+
+        public async Task<bool> UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown)
+        {
+            var first = Builders<SelectList>.Filter.Eq(w => w.FormId, formId);
+            var second = Builders<SelectList>.Filter.Eq(w => w.PropertyKey, propertyKey);
+
+            var filter = Builders<SelectList>.Filter.And(first, second);
+            var update = Builders<SelectList>.Update.Set(x => x.Items, dropDown);
+
+            var result = await _context.SelectLists.UpdateOneAsync(filter, update);
+
+            return result.ModifiedCount != 0;
+        }
+
+        public async Task<Record> GetLatestRecord(string formId)
+        {
+            var records = await _context.Records.Find(w => w.FormId == formId).ToListAsync();
+
+            return records.LastOrDefault();
         }
     }
 }

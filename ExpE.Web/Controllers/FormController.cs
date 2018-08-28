@@ -51,6 +51,7 @@ namespace ExpE.Web.Controllers
         [Route("form")]
         public async Task<ActionResult<bool>> UpdateForm([FromBody] MyForm form)
         {
+            //DEPRECATED
             return await _repo.UpdateForm(form);
         }
 
@@ -108,6 +109,15 @@ namespace ExpE.Web.Controllers
             return await _repo.AddSelectList(id, key, dropDown);
         }
 
+        [HttpPut]
+        [Route("selectitems/{formId}/{propertyKey}")]
+        public async Task<ActionResult<bool>> UpdateSelectList(string formId, string propertyKey, [FromBody] IEnumerable<DropDownOptions> dropDown)
+        {
+            var result = await _repo.UpdateSelectList(formId, propertyKey, dropDown);
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("selectitem/{id}/{key}")]
         public async Task<ActionResult<bool>> AddSelectItem(string id, string key, [FromBody] DropDownOptions dropDown)
@@ -121,6 +131,27 @@ namespace ExpE.Web.Controllers
         public async Task<IEnumerable<DropDownOptions>> GetSelectList(string id, string key)
         {
             return await _repo.GetSelectList(id, key);
+        }
+
+        [HttpDelete]
+        [Route("property/{formId}/{key}")]
+        public async Task<ActionResult<bool>> DeleteProperty(string formId, string key)
+        {
+            return await _repo.DeleteProperty(formId, key);
+        }
+
+        [HttpPost]
+        [Route("property/{formId}")]
+        public async Task<ActionResult<Property>> AddProperty(string formId, [FromBody] Property property)
+        {
+            return await _repo.AddProperty(formId, property);
+        }
+
+        [HttpPut]
+        [Route("property/{formId}")]
+        public async Task<ActionResult<Property>> UpdateProperty(string formId, [FromBody] Property property)
+        {
+            return await _repo.UpdateProperty(formId, property);
         }
 
     }

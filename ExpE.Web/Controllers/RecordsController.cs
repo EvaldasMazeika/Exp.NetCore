@@ -162,5 +162,12 @@ namespace ExpE.Web.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("recordby/{formId}")]
+        public async Task<ActionResult<Record>> GetLatestRecord(string formId)
+        {
+            return await _repo.GetLatestRecord(formId);
+        }
+
     }
 }

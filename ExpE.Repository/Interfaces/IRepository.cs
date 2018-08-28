@@ -29,5 +29,10 @@ namespace ExpE.Repository.Interfaces
         Task<bool> AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown);
         Task AddSelectItem(string id, string key, DropDownOptions dropDown);
         Task<List<DropDownOptions>> GetSelectList(string id, string key);
+        Task<bool> DeleteProperty(string formId, string key);
+        Task<Property> AddProperty(string formId, Property property);
+        Task<Property> UpdateProperty(string formId, Property property);
+        Task<bool> UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown);
+        Task<Record> GetLatestRecord(string formId);
     }
 }

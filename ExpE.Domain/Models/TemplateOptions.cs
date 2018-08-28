@@ -35,5 +35,8 @@ namespace ExpE.Domain
 
         [JsonProperty(PropertyName = "dateFormat")]
         public string DateFormat { get; set; }
+
+        [JsonProperty(PropertyName = "isExportable")]
+        public Boolean? IsExportable { get; set; }
     }
 }
