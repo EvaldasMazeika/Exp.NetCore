@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExpE.Core\ExpE.Core.csproj" />
     <ProjectReference Include="..\ExpE.Repository\ExpE.Repository.csproj" />
   </ItemGroup>
 

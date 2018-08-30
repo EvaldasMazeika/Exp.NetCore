@@ -98,15 +98,6 @@ namespace ExpE.Web.Controllers
             return File(memory, MimeGuesser.GuessMimeType(path), title);
         }
 
-        [HttpPost]
-        [Route("test")]
-        public ActionResult<int> TestMe()
-        {
-            var file = Request.Form.Files;
-
-            return Ok();
-        }
-
         [HttpPost, DisableRequestSizeLimit]
         [Route("record")]
         public async Task<ActionResult<Record>> InsertRecord([FromBody] Record record)

@@ -12,9 +12,6 @@ namespace ExpE.Domain
         [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "placeholder")]
-        public string Placeholder { get; set; }
-
         [JsonProperty(PropertyName = "required")]
         public Boolean? Required { get; set; }
 

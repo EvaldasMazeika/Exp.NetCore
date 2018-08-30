@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpE.Core.Interfaces;
 using ExpE.Domain;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
+using HeyRed.Mime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +21,15 @@ namespace ExpE.Web.Controllers
     {
         private readonly IRepository _repo;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IExcelExport _excelExport;
 
-        public FormController(IRepository repo, IHostingEnvironment hostingEnvironment)
+        public FormController(IRepository repo, 
+            IHostingEnvironment hostingEnvironment,
+            IExcelExport excelExport)
         {
             _repo = repo;
             _hostingEnvironment = hostingEnvironment;
+            _excelExport = excelExport;
         }
 
         [HttpPost]
@@ -152,6 +158,36 @@ namespace ExpE.Web.Controllers
         public async Task<ActionResult<Property>> UpdateProperty(string formId, [FromBody] Property property)
         {
             return await _repo.UpdateProperty(formId, property);
+        }
+
+        [HttpGet]
+        [Route("export/{formId}")]
+        public async Task<IActionResult> ExportTable(string formId)
+        {
+            var form = await _repo.GetFormById(formId);
+            var records = await _repo.GetRecords(formId);
+
+            MemoryStream excelStream = _excelExport.ExportSimpleExcel(form, records);
+
+            return File(excelStream, MimeGuesser.GuessMimeType(excelStream), $"{form.Name}.xlsx");
+        }
+
+        [HttpPost]
+        [Route("export/{formId}")]
+        public async Task<IActionResult> UseTemplate(string formId)
+        {
+            var form = await _repo.GetFormById(formId);
+            var records = await _repo.GetRecords(formId);
+
+            var files = Request.Form.Files;
+            var file = files.Single();
+
+            var templateStream = new MemoryStream();
+            await file.CopyToAsync(templateStream);
+
+            MemoryStream memory = _excelExport.ExportUsingTemplate(templateStream, form, records);
+
+            return File(memory, MimeGuesser.GuessMimeType(memory), $"{form.Name}.xlsx");
         }
 
     }

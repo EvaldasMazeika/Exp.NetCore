@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpE.Domain", "ExpE.Domain\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpE.Repository", "ExpE.Repository\ExpE.Repository.csproj", "{992471CA-941A-4627-8A8F-3CB8F7CA05F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpE.Core", "ExpE.Core\ExpE.Core.csproj", "{14A29D21-18C7-4A3C-BAC0-30271EB3BC36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,29 +35,15 @@ Global
 		{992471CA-941A-4627-8A8F-3CB8F7CA05F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{992471CA-941A-4627-8A8F-3CB8F7CA05F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{992471CA-941A-4627-8A8F-3CB8F7CA05F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A29D21-18C7-4A3C-BAC0-30271EB3BC36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A29D21-18C7-4A3C-BAC0-30271EB3BC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A29D21-18C7-4A3C-BAC0-30271EB3BC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A29D21-18C7-4A3C-BAC0-30271EB3BC36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0549A6EC-5572-4DB2-A5DC-AD7AD9326BC0}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://expensesex.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ExpE.Web\\ExpE.Web.csproj
-		SccProjectName1 = ExpE.Web
-		SccLocalPath1 = ExpE.Web
-		SccProjectUniqueName2 = ExpE.UnitTests\\ExpE.UnitTests.csproj
-		SccProjectName2 = ExpE.UnitTests
-		SccLocalPath2 = ExpE.UnitTests
-		SccProjectUniqueName3 = ExpE.Domain\\ExpE.Domain.csproj
-		SccProjectName3 = ExpE.Domain
-		SccLocalPath3 = ExpE.Domain
-		SccProjectUniqueName4 = ExpE.Repository\\ExpE.Repository.csproj
-		SccProjectName4 = ExpE.Repository
-		SccLocalPath4 = ExpE.Repository
 	EndGlobalSection
 EndGlobal

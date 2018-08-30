@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpE.Core.Interfaces;
+using ExpE.Core.Services;
 using ExpE.Repository;
 using ExpE.Repository.Interfaces;
 using ExpE.Repository.Repositories;
@@ -30,6 +32,7 @@ namespace ExpE.Web
             services.AddMvc();
             services.AddDbContext<SQLContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<IMongoDbContext, MongoDbContext>();
+            services.AddScoped<IExcelExport, ExcelExport>();
 
             services.AddCors(options =>
             {
