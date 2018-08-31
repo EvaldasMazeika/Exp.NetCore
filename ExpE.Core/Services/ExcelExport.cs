@@ -37,7 +37,7 @@ namespace ExpE.Core.Services
             ws.Cell(startRow, 1).Style.Font.Bold = true;
             ws.Cell(startRow, 1).Style.Font.FontSize = 12;
 
-            var rowOfIds = ws.Cell(startRow+1, 1).InsertData(Enumerable.Range(1, records.Count));
+            var rowOfIds = ws.Cell(startRow + 1, 1).InsertData(Enumerable.Range(1, records.Count));
             rowOfIds.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             rowOfIds.Style.Border.OutsideBorderColor = XLColor.Black;
             rowOfIds.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
@@ -48,7 +48,7 @@ namespace ExpE.Core.Services
             for (int i = 0; i < form.Items.Count(); i++)
             {
                 var temp = form.Items.ElementAt(i);
-               
+
                 if (temp.TemplateOptions.IsExportable == true)
                 {
                     column++;
@@ -59,16 +59,14 @@ namespace ExpE.Core.Services
                     {
                         var value = item.Where(w => w.Key == temp.Key).Select(w => w.Value).FirstOrDefault();
 
-                        if (temp.Type == "primeCalendar")
-                        {
-
-                            var local = (DateTime)value;
-                            value = local.ToLocalTime().ToString(temp.TemplateOptions.DateFormat);
-                        }
-
                         if (value == null)
                         {
                             value = "";
+                        }
+                        else if (temp.Type == "primeCalendar")
+                        {
+                            var local = (DateTime)value;
+                            value = local.ToLocalTime();
                         }
                         else if (typeof(IList).IsAssignableFrom(value.GetType()))
                         {
@@ -76,6 +74,7 @@ namespace ExpE.Core.Services
                             var val = valu.Cast<string>();
                             value = String.Join(',', val);
                         }
+
                         items.Add(value);
                     }
                     ws.Cell(startRow, column + 2).SetValue(temp.TemplateOptions.Label);
@@ -84,7 +83,7 @@ namespace ExpE.Core.Services
                     ws.Cell(startRow, column + 2).Style.Font.Bold = true;
                     ws.Cell(startRow, column + 2).Style.Font.FontSize = 12;
 
-                    var rangeOfTable = ws.Cell(startRow+1, column + 2).InsertData(items.AsEnumerable());
+                    var rangeOfTable = ws.Cell(startRow + 1, column + 2).InsertData(items.AsEnumerable());
                     rangeOfTable.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                     rangeOfTable.Style.Border.OutsideBorderColor = XLColor.Black;
                     rangeOfTable.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
@@ -92,14 +91,12 @@ namespace ExpE.Core.Services
 
                     if (temp.Type == "primeCalendar")
                     {
-                        ws.Column(column + 2).Style.DateFormat.Format = temp.TemplateOptions.DateFormat;
+                        rangeOfTable.Style.DateFormat.Format = temp.TemplateOptions.DateFormat;
                     }
                 }
             }
 
-
             ws.Row(startRow).Height = 50;
-            //ws.Rows().AdjustToContents();
             ws.Columns().AdjustToContents();
         }
 
@@ -108,7 +105,7 @@ namespace ExpE.Core.Services
             XLWorkbook workbook = new XLWorkbook(templateStream);
             var ws = workbook.Worksheet(1);
 
-            var NumberOfLastRow = ws.LastRowUsed().RowNumber()+2;
+            var NumberOfLastRow = ws.LastRowUsed().RowNumber() + 2;
 
             InsertExcelTable(NumberOfLastRow, ws, form, records);
 
