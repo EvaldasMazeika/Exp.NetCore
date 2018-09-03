@@ -60,14 +60,6 @@ namespace ExpE.Repository.Repositories
             return result.DeletedCount != 0;
         }
 
-        public async Task<IEnumerable<MyForm>> GetFormByName(string name)
-        {
-            var filter = Builders<MyForm>.Filter.Eq("Name", name);
-            var result = await _context.Forms.Find(filter).ToListAsync();
-
-            return result;
-        }
-
         public bool ExistsFormName(string name)
         {
             var la = _context.Forms.Find(x => x.Name == name).CountDocuments();
@@ -83,8 +75,6 @@ namespace ExpE.Repository.Repositories
         {
             return await _context.Forms.Find(_ => true).ToListAsync();
         }
-
-
 
 
         public async Task<List<Record>> GetRecords(string id)

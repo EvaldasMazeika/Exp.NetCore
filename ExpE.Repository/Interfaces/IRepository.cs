@@ -16,7 +16,6 @@ namespace ExpE.Repository.Interfaces
         Task<MyForm> GetFormById(string id);
         Task<bool> UpdateForm(MyForm form);
         Task<bool> DeleteFormById(string id);
-        Task<IEnumerable<MyForm>> GetFormByName(string name);
 
         Task<List<Record>> GetRecords(string id);
         Task<Record> GetRecord(string id);

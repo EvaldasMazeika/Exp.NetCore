@@ -81,11 +81,7 @@ namespace ExpE.Web.Controllers
         [Route("download/{formId}/{recordId}/{propertyName}/{title}")]
         public async Task<IActionResult> DownloadFile(string formId,string recordId, string propertyName, string title)
         {
-              string root = _hostingEnvironment.WebRootPath;
-            //  root = String.Concat(root, $"/{formId}/{propertyName}");
-            // IFileProvider provider = new PhysicalFileProvider(root);
-            // IFileInfo fileInfo = provider.GetFileInfo(title);
-            // var readStream = fileInfo.CreateReadStream();
+            string root = _hostingEnvironment.WebRootPath;
             var path = Path.Combine(root,formId, recordId, propertyName, title);
 
             var memory = new MemoryStream();

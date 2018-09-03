@@ -30,7 +30,6 @@ namespace ExpE.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<SQLContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<IMongoDbContext, MongoDbContext>();
             services.AddScoped<IExcelExport, ExcelExport>();
 
@@ -43,7 +42,6 @@ namespace ExpE.Web
                         .AllowCredentials());
             });
 
-            
 
             services.AddScoped<IRepository, MongoDbRepository>();
         }

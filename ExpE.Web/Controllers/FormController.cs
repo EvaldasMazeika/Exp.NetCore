@@ -53,23 +53,10 @@ namespace ExpE.Web.Controllers
             return BadRequest();
         }
 
-        [HttpPut]
-        [Route("form")]
-        public async Task<ActionResult<bool>> UpdateForm([FromBody] MyForm form)
-        {
-            //DEPRECATED
-            return await _repo.UpdateForm(form);
-        }
-
         [HttpGet]
         [Route("form")]
-        public async Task<IEnumerable<MyForm>> GetForms([FromQuery] string name)
+        public async Task<IEnumerable<MyForm>> GetForms()
         {
-            if (name != null)
-            {
-                return await _repo.GetFormByName(name);
-            }
-
             return await _repo.GetAllForms();
         }
 
