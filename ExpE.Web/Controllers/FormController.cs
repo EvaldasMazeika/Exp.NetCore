@@ -71,7 +71,7 @@ namespace ExpE.Web.Controllers
         public async Task<ActionResult<bool>> DeleteForm(string id)
         {
             //check if form has any files
-            string path = Path.Combine(_hostingEnvironment.WebRootPath, id);
+            string path = Path.Combine(_hostingEnvironment.WebRootPath,"Uploads", id);
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);

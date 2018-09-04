@@ -46,7 +46,7 @@ namespace ExpE.Web.Controllers
         {
             try
             {
-                string path = Path.Combine(_hostingEnvironment.WebRootPath, formId, recordId, propertyName);
+                string path = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", formId, recordId, propertyName);
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -80,8 +80,7 @@ namespace ExpE.Web.Controllers
         [Route("download/{formId}/{recordId}/{propertyName}/{title}")]
         public async Task<IActionResult> DownloadFile(string formId,string recordId, string propertyName, string title)
         {
-            string root = _hostingEnvironment.WebRootPath;
-            var path = Path.Combine(root,formId, recordId, propertyName, title);
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", formId, recordId, propertyName, title);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
@@ -131,7 +130,7 @@ namespace ExpE.Web.Controllers
         {
             var isDeleted = await _repo.DeleteRecord(id);
             //check if record has any files
-            string path = Path.Combine(_hostingEnvironment.WebRootPath, formId, id);
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", formId, id);
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);

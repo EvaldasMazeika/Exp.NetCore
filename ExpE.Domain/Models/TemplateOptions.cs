@@ -35,5 +35,8 @@ namespace ExpE.Domain
 
         [JsonProperty(PropertyName = "isExportable")]
         public Boolean? IsExportable { get; set; }
+
+        [JsonProperty(PropertyName = "isPopulated")]
+        public Boolean? IsPopulated { get; set; }
     }
 }
