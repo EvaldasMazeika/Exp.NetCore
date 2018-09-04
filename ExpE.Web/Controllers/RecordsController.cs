@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
-using HeyRed.Mime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -91,7 +90,7 @@ namespace ExpE.Web.Controllers
             }
             memory.Position = 0;
 
-            return File(memory, MimeGuesser.GuessMimeType(path), title);
+            return File(memory, MimeTypes.GetMimeType(path), title);
         }
 
         [HttpPost, DisableRequestSizeLimit]

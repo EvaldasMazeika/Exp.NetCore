@@ -7,7 +7,6 @@ using ExpE.Core.Interfaces;
 using ExpE.Domain;
 using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
-using HeyRed.Mime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -156,7 +155,7 @@ namespace ExpE.Web.Controllers
 
             MemoryStream excelStream = _excelExport.ExportSimpleExcel(form, records);
 
-            return File(excelStream, MimeGuesser.GuessMimeType(excelStream), $"{form.Name}.xlsx");
+            return File(excelStream, MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
         }
 
         [HttpPost]
@@ -174,7 +173,7 @@ namespace ExpE.Web.Controllers
 
             MemoryStream memory = _excelExport.ExportUsingTemplate(templateStream, form, records);
 
-            return File(memory, MimeGuesser.GuessMimeType(memory), $"{form.Name}.xlsx");
+            return File(memory, MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
         }
 
     }
