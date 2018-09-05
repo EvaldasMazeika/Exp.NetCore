@@ -38,5 +38,11 @@ namespace ExpE.Domain
 
         [JsonProperty(PropertyName = "isPopulated")]
         public Boolean? IsPopulated { get; set; }
+
+        [JsonProperty(PropertyName = "hasGroup")]
+        public Boolean? HasGroup { get; set; }
+
+        [JsonProperty(PropertyName = "groupName")]
+        public string GroupName { get; set; }
     }
 }
