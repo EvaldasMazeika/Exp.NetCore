@@ -11,27 +11,27 @@ namespace ExpE.Repository.Interfaces
     public interface IRepository
     {
         Task<IEnumerable<MyForm>> GetAllForms();
-        Task<bool> AddForm(MyForm form);
+        Task<MyForm> AddForm(MyForm form);
         bool ExistsFormName(string name);
         Task<MyForm> GetFormById(string id);
-        Task<bool> UpdateForm(MyForm form);
-        Task<bool> DeleteFormById(string id);
+        Task DeleteFormById(string id);
 
         Task<List<Record>> GetRecords(string id);
         Task<Record> GetRecord(string id);
-        Task<bool> AddRecord(Record record);
-        Task<bool> DeleteRecord(string id);
-        Task<bool> UpdateRecord(Record record);
-        Task<bool> AddAutoCompletes(AutoCompleteList autoCompleteList);
+        Task<Record> AddRecord(Record record);
+        Task DeleteRecord(string id);
+        Task<Record> UpdateRecord(Record record);
+        Task AddAutoCompletes(AutoCompleteList autoCompleteList);
         Task<AutoComplete> GetAutoComplete(string formId, string propertyKey);
         Task AddWordsToAutos(AutoCompleteWords words);
-        Task<bool> AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown);
+        Task AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown);
         Task AddSelectItem(string id, string key, DropDownOptions dropDown);
         Task<List<DropDownOptions>> GetSelectList(string id, string key);
-        Task<bool> DeleteProperty(string formId, string key);
+        Task DeleteProperty(string formId, string key);
         Task<Property> AddProperty(string formId, Property property);
+        Task<Property> GetProperty(string formId, string key);
         Task<Property> UpdateProperty(string formId, Property property);
-        Task<bool> UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown);
+        Task UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown);
         Task<Record> GetLatestRecord(string formId);
     }
 }

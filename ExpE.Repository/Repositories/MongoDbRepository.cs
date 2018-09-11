@@ -20,30 +20,16 @@ namespace ExpE.Repository.Repositories
             _context = context;
         }
 
-        public async Task<bool> AddForm(MyForm form)
+        public async Task<MyForm> AddForm(MyForm form)
         {
-            try
-            {
-                await _context.Forms.InsertOneAsync(form);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            form.Id = ObjectId.GenerateNewId().ToString();
+
+            await _context.Forms.InsertOneAsync(form);
+
+            return await _context.Forms.Find(w => w.Id == form.Id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateForm(MyForm form)
-        {
-            var actionResult = await _context.Forms.ReplaceOneAsync(x => x.Id.Equals(form.Id), form,
-                new UpdateOptions() { IsUpsert = true });
-
-            return actionResult.IsAcknowledged
-                   && actionResult.ModifiedCount > 0;
-        }
-
-        public async Task<bool> DeleteFormById(string id)
+        public async Task DeleteFormById(string id)
         {
             //deletes form
             var filterForm = Builders<MyForm>.Filter.Eq("_id", id);
@@ -56,8 +42,6 @@ namespace ExpE.Repository.Repositories
             //delete related auto completes
             var filterAutoCompletes = Builders<AutoComplete>.Filter.Eq("FormId", id);
             await _context.AutoCompletes.DeleteManyAsync(filterAutoCompletes);
-
-            return result.DeletedCount != 0;
         }
 
         public bool ExistsFormName(string name)
@@ -89,58 +73,38 @@ namespace ExpE.Repository.Repositories
             return await _context.Records.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> AddRecord(Record record)
+        public async Task<Record> AddRecord(Record record)
         {
-            try
-            {
-                await _context.Records.InsertOneAsync(record);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            record.Id = ObjectId.GenerateNewId().ToString();
+
+            await _context.Records.InsertOneAsync(record);
+
+            return await _context.Records.Find(w => w.Id == record.Id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> DeleteRecord(string id)
+        public async Task DeleteRecord(string id)
         {
             var filter = Builders<Record>.Filter.Eq("_id", id);
-            var result = await _context.Records.DeleteOneAsync(filter);
-
-            return result.DeletedCount != 0;
+            await _context.Records.DeleteOneAsync(filter);
         }
 
-        public async Task<bool> UpdateRecord(Record record)
+        public async Task<Record> UpdateRecord(Record record)
         {
-            var actionResult = await _context.Records.ReplaceOneAsync(x => x.Id.Equals(record.Id), record,
-    new UpdateOptions() { IsUpsert = true });
-
-            return actionResult.IsAcknowledged
-                   && actionResult.ModifiedCount > 0;
+           await _context.Records.ReplaceOneAsync(x => x.Id.Equals(record.Id), record, new UpdateOptions() { IsUpsert = true });
+           return await _context.Records.Find(w => w.Id == record.Id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> AddAutoCompletes(AutoCompleteList autoCompleteList)
+        public async Task AddAutoCompletes(AutoCompleteList autoCompleteList)
         {
-            try
+            foreach (var item in autoCompleteList.Properties)
             {
-                foreach (var item in autoCompleteList.Properties)
+                var record = await _context.AutoCompletes.Find(x => x.FormId == autoCompleteList.FormId && x.PropertyKey == item).FirstOrDefaultAsync();
+                if (record == null)
                 {
-                    var record = await _context.AutoCompletes.Find(x => x.FormId == autoCompleteList.FormId && x.PropertyKey == item).FirstOrDefaultAsync();
-                    if (record == null)
-                    {
-                        var id = ObjectId.GenerateNewId().ToString();
-                        var res = new AutoComplete { Id = id, FormId = autoCompleteList.FormId, PropertyKey = item, Items = new List<string>() };
-                        await _context.AutoCompletes.InsertOneAsync(res);
-                    }
+                    var id = ObjectId.GenerateNewId().ToString();
+                    var res = new AutoComplete { Id = id, FormId = autoCompleteList.FormId, PropertyKey = item, Items = new List<string>() };
+                    await _context.AutoCompletes.InsertOneAsync(res);
                 }
-
-                return true;
-            }
-            catch (Exception)
-            {
-
-                throw;
             }
         }
 
@@ -157,8 +121,6 @@ namespace ExpE.Repository.Repositories
                 var autoObject = await _context.AutoCompletes.Find(w => w.FormId == words.FormId && w.PropertyKey == item.Key).SingleAsync();
                 if (!autoObject.Items.Contains(item.Value))
                 {
-                    //  autoObject.Items.Append(item.Value);
-
                     var filter = Builders<AutoComplete>.Filter.Eq(s => s.Id, autoObject.Id);
                     var update = Builders<AutoComplete>.Update.AddToSet(s => s.Items, item.Value);
                     await _context.AutoCompletes.UpdateOneAsync(filter, update);
@@ -166,22 +128,12 @@ namespace ExpE.Repository.Repositories
             }
         }
 
-        public async Task<bool> AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown)
+        public async Task AddSelectList(string id, string key, IEnumerable<DropDownOptions> dropDown)
         {
-            try
-            {
-                var ids = ObjectId.GenerateNewId().ToString();
+            var ids = ObjectId.GenerateNewId().ToString();
 
-                var res = new SelectList { Id = ids, FormId = id, PropertyKey = key, Items = dropDown };
-                await _context.SelectLists.InsertOneAsync(res);
-
-                return true;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            var res = new SelectList { Id = ids, FormId = id, PropertyKey = key, Items = dropDown };
+            await _context.SelectLists.InsertOneAsync(res);
         }
 
         public async Task AddSelectItem(string id, string key, DropDownOptions dropDown)
@@ -199,7 +151,7 @@ namespace ExpE.Repository.Repositories
             return items.Items.ToList();
         }
 
-        public async Task<bool> DeleteProperty(string formId, string key)
+        public async Task DeleteProperty(string formId, string key)
         {
 
             var update = Builders<MyForm>.Update.PullFilter(p => p.Items, f => f.Key == key);
@@ -213,7 +165,6 @@ namespace ExpE.Repository.Repositories
             var filterSelectList = Builders<SelectList>.Filter.Where(w => w.FormId == formId && w.PropertyKey == key);
             await _context.SelectLists.DeleteOneAsync(filterSelectList);
 
-            return result.ModifiedCount != 0;
         }
 
         public async Task<Property> AddProperty(string formId, Property property)
@@ -238,7 +189,7 @@ namespace ExpE.Repository.Repositories
             return res.Items.SingleOrDefault(w => w.Key == property.Key);
         }
 
-        public async Task<bool> UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown)
+        public async Task UpdateSelectList(string formId, string propertyKey, IEnumerable<DropDownOptions> dropDown)
         {
             var first = Builders<SelectList>.Filter.Eq(w => w.FormId, formId);
             var second = Builders<SelectList>.Filter.Eq(w => w.PropertyKey, propertyKey);
@@ -246,9 +197,7 @@ namespace ExpE.Repository.Repositories
             var filter = Builders<SelectList>.Filter.And(first, second);
             var update = Builders<SelectList>.Update.Set(x => x.Items, dropDown);
 
-            var result = await _context.SelectLists.UpdateOneAsync(filter, update);
-
-            return result.ModifiedCount != 0;
+            await _context.SelectLists.UpdateOneAsync(filter, update);
         }
 
         public async Task<Record> GetLatestRecord(string formId)
@@ -256,6 +205,13 @@ namespace ExpE.Repository.Repositories
             var records = await _context.Records.Find(w => w.FormId == formId).ToListAsync();
 
             return records.LastOrDefault();
+        }
+
+        public async Task<Property> GetProperty(string formId, string key)
+        {
+            var result = await _context.Forms.Find(w => w.Id == formId).FirstOrDefaultAsync();
+
+            return result.Items.Where(w => w.Key == key).FirstOrDefault();
         }
     }
 }
