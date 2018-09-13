@@ -61,7 +61,7 @@ namespace ExpE.Repository.Repositories
         }
 
 
-        public async Task<List<Record>> GetRecords(string id)
+        public async Task<IEnumerable<Record>> GetRecords(string id)
         {
             var records = await _context.Records.FindAsync(x => x.FormId == id);
 
@@ -144,7 +144,7 @@ namespace ExpE.Repository.Repositories
             await _context.SelectLists.UpdateOneAsync(filter, update);
         }
 
-        public async Task<List<DropDownOptions>> GetSelectList(string id, string key)
+        public async Task<IEnumerable<DropDownOptions>> GetSelectList(string id, string key)
         {
             var items = await _context.SelectLists.Find(x => x.FormId == id && x.PropertyKey == key).SingleAsync();
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpE.Core.Interfaces;
 using ExpE.Domain;
+using ExpE.Domain.Models;
 using ExpE.Repository.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -88,9 +89,7 @@ namespace ExpE.Web.Controllers
             var form = await _repo.GetFormById(id);
             var records = await _repo.GetRecords(id);
 
-            MemoryStream excelStream = _excelExport.ExportSimpleExcel(form, records);
-
-            return File(excelStream, MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
+            return File(_excelExport.ExportSimpleExcel(form, records), MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
         }
 
         [HttpPost]
@@ -100,15 +99,13 @@ namespace ExpE.Web.Controllers
             var form = await _repo.GetFormById(id);
             var records = await _repo.GetRecords(id);
 
-            var files = Request.Form.Files;
-            var file = files.Single();
+            var file = Request.Form.Files.Single();
 
             var templateStream = new MemoryStream();
             await file.CopyToAsync(templateStream);
 
-            MemoryStream memory = _excelExport.ExportUsingTemplate(templateStream, form, records);
-
-            return File(memory, MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
+            return File(_excelExport.ExportUsingTemplate(templateStream, form, records),
+                MimeTypes.GetMimeType($"{form.Name}.xlsx"), $"{form.Name}.xlsx");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ExpE.Core.Services
 {
     public class ExcelExport : IExcelExport
     {
-        public MemoryStream ExportSimpleExcel(MyForm form, List<Record> records)
+        public MemoryStream ExportSimpleExcel(MyForm form, IEnumerable<Record> records)
         {
             XLWorkbook workbook = new XLWorkbook();
             var memory = new MemoryStream();
@@ -28,7 +28,7 @@ namespace ExpE.Core.Services
             return memory;
         }
 
-        private void InsertExcelTable(int startRow, IXLWorksheet ws, MyForm form, List<Record> records)
+        private void InsertExcelTable(int startRow, IXLWorksheet ws, MyForm form, IEnumerable<Record> records)
         {
             ws.Cell(startRow, 1).SetValue("No");
             ws.Cell(startRow, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thick;
@@ -36,7 +36,7 @@ namespace ExpE.Core.Services
             ws.Cell(startRow, 1).Style.Font.Bold = true;
             ws.Cell(startRow, 1).Style.Font.FontSize = 12;
 
-            var rowOfIds = ws.Cell(startRow + 1, 1).InsertData(Enumerable.Range(1, records.Count));
+            var rowOfIds = ws.Cell(startRow + 1, 1).InsertData(Enumerable.Range(1, records.Count()));
             rowOfIds.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             rowOfIds.Style.Border.OutsideBorderColor = XLColor.Black;
             rowOfIds.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
@@ -99,7 +99,7 @@ namespace ExpE.Core.Services
             ws.Columns().AdjustToContents();
         }
 
-        public MemoryStream ExportUsingTemplate(MemoryStream templateStream, MyForm form, List<Record> records)
+        public MemoryStream ExportUsingTemplate(MemoryStream templateStream, MyForm form, IEnumerable<Record> records)
         {
             XLWorkbook workbook = new XLWorkbook(templateStream);
             var ws = workbook.Worksheet(1);

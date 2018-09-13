@@ -27,7 +27,7 @@ namespace ExpE.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Record>>> GetAllRecords(string formId)
+        public async Task<IEnumerable<Record>> GetAllRecords(string formId)
         {
             return await _repo.GetRecords(formId);
         }

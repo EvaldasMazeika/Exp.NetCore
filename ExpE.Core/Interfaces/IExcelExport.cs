@@ -11,7 +11,7 @@ namespace ExpE.Core.Interfaces
 {
     public interface IExcelExport
     {
-        MemoryStream ExportSimpleExcel(MyForm form, List<Record> records);
-        MemoryStream ExportUsingTemplate(MemoryStream templateStream, MyForm form, List<Record> records);
+        MemoryStream ExportSimpleExcel(MyForm form, IEnumerable<Record> records);
+        MemoryStream ExportUsingTemplate(MemoryStream templateStream, MyForm form, IEnumerable<Record> records);
     }
 }
