@@ -14,6 +14,7 @@ using MongoDB.Bson;
 
 namespace ExpE.Web.Controllers
 {
+    [Route("")]
     [Route("api/[controller]")]
     [ApiController]
     public class FormsController : ControllerBase

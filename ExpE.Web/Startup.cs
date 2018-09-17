@@ -53,7 +53,7 @@ namespace ExpE.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
 
             app.UseMvc();
